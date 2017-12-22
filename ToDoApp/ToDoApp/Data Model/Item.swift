@@ -13,4 +13,5 @@ class Item: Object {
     @objc dynamic var title = ""
     @objc dynamic var done = false
     var parentCategory = LinkingObjects(fromType: Category.self, property: "items")
+    @objc dynamic var dataCreated: Date?
 }

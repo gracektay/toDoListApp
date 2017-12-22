@@ -69,13 +69,6 @@ class ToDoListViewController: UITableViewController {
         }
         
         tableView.reloadData()
-        
-//        context.delete(itemArray[indexPath.row])
-//        itemArray.remove(at: indexPath.row)
-        
-//        toDoItems[indexPath.row].done = !toDoItems[indexPath.row].done
-//
-//        saveItems()
 
         tableView.deselectRow(at: indexPath, animated: true)
        
@@ -91,12 +84,15 @@ class ToDoListViewController: UITableViewController {
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
             
             if let currentCategory = self.selectedCategory {
-                
+
                 do {
                     try self.realm.write {
                         let newItem = Item()
                         newItem.title = textField.text!
-                        currentCategory.items.append(newItem)                    }
+                        newItem.dataCreated = Date()
+                        currentCategory.items.append(newItem)
+                        
+                    }
                 } catch {
                     print("Error adding new item \(error)")
                 }
@@ -128,27 +124,22 @@ class ToDoListViewController: UITableViewController {
 
 //MARK:- Search Bar
 
-//extension ToDoListViewController: UISearchBarDelegate {
-//
-//    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
-//        let request : NSFetchRequest<Item> = Item.fetchRequest()
-//
-//        let predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
-//
-//        request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
-//
-//        loadItems(with: request, predicate: predicate)
-//
-//    }
-//
-//    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
-//        if searchBar.text?.count == 0 {
-//            loadItems()
-//
-//            DispatchQueue.main.async {
-//                searchBar.resignFirstResponder()
-//            }
-//        }
-//    }
-//}
+extension ToDoListViewController: UISearchBarDelegate {
+
+    func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
+        toDoItems = toDoItems?.filter("title CONTAINS[cd] %@", searchBar.text!).sorted(byKeyPath: "dateCreated", ascending: true)
+        
+        tableView.reloadData()
+    }
+
+    func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String) {
+        if searchBar.text?.count == 0 {
+            loadItems()
+
+            DispatchQueue.main.async {
+                searchBar.resignFirstResponder()
+            }
+        }
+    }
+}
 
