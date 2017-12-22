@@ -9,26 +9,24 @@
 import UIKit
 import RealmSwift
 
-class ToDoListViewController: UITableViewController {
+class ToDoListViewController: SwipeTableViewController {
 
     var toDoItems: Results<Item>?
-    
     let realm = try! Realm()
-
     var toDoListArrayKey = "ToDoListArray"
-
-    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
-
     let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask)
     
     var selectedCategory: Category? {
         didSet {
             loadItems()
         }
+
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        tableView.rowHeight = 80
         
         print(dataFilePath)
         
@@ -43,7 +41,7 @@ class ToDoListViewController: UITableViewController {
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "ToDoItemCell", for: indexPath)
+        let cell = super.tableView(tableView, cellForRowAt: indexPath)
         
         if let item = toDoItems?[indexPath.row] {
             
