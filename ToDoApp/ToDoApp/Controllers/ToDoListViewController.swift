@@ -84,7 +84,7 @@ class ToDoListViewController: SwipeTableViewController {
             if let currentCategory = self.selectedCategory {
 
                 do {
-                    try self.realm.write {
+                    try  self.realm.write {
                         let newItem = Item()
                         newItem.title = textField.text!
                         newItem.dataCreated = Date()
